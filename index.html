@@ -104,9 +104,56 @@ tr.clickable:hover td{background:#eff6ff}
 .tscroll{overflow-x:auto}
 .empty{text-align:center;padding:40px;color:#94a3b8}
 .empty .icon{font-size:40px;margin-bottom:10px}
+
+/* ── Mobile / Tablet Responsive ─────────────────────────── */
+#mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:150}
+#mob-overlay.open{display:block}
+#hamburger{display:none;position:fixed;top:12px;left:12px;z-index:300;background:#1e3a5f;border:none;border-radius:8px;padding:8px 11px;cursor:pointer;font-size:18px;color:#fff;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+
+@media(max-width:900px){
+  #hamburger{display:block}
+  #sidebar{position:fixed;left:-240px;top:0;height:100vh;z-index:200;transition:left .25s ease;box-shadow:4px 0 24px rgba(0,0,0,.2);min-width:230px}
+  #sidebar.open{left:0}
+  #main{width:100%}
+  .topbar{padding:12px 14px 12px 56px}
+  .topbar h2{font-size:14px}
+  .topbar p{font-size:11px}
+  .topbar-right .badge{display:none}
+  .sec-body{padding:14px}
+  .grid2,.grid3{grid-template-columns:1fr!important}
+  .breakdown-grid{grid-template-columns:1fr!important}
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .filters{flex-direction:column;align-items:stretch}
+  .filter-group select,.filter-group input{width:100%!important}
+  .info-grid{grid-template-columns:repeat(2,1fr)!important}
+  .mini-stat-row{flex-wrap:wrap}
+  .mini-stat{min-width:calc(50% - 5px)}
+  .detail-modal{width:98vw;border-radius:10px;max-height:94vh}
+  .modal-body{padding:14px}
+  .cmp-summary-row-wrap{flex-wrap:wrap}
+  table th,table td{padding:7px 8px;font-size:12px}
+}
+
+@media(max-width:480px){
+  #hamburger{top:10px;left:10px;padding:7px 10px;font-size:16px}
+  .topbar{padding:10px 12px 10px 50px}
+  .topbar h2{font-size:13px}
+  .cards{grid-template-columns:repeat(2,1fr);gap:10px}
+  .card{padding:12px}
+  .card-value{font-size:22px}
+  .card-icon{display:none}
+  .sec-body{padding:10px}
+  .btn-sm{padding:3px 8px;font-size:11px}
+  th{font-size:11px}td{font-size:12px}
+  .mini-stat .n{font-size:18px}
+  .mini-stat{padding:8px 10px}
+  .pagination{flex-wrap:wrap;gap:3px;padding:8px}
+}
 </style>
 </head>
 <body>
+<button id="hamburger" onclick="toggleSidebar()">☰</button>
+<div id="mob-overlay" onclick="closeSidebar()"></div>
 <div id="sidebar">
   <div class="logo"><h1>ระบบข้อมูลนักศึกษา</h1><p>สำนักวิชาวิศวกรรมศาสตร์</p></div>
   <nav>
@@ -450,7 +497,7 @@ function renderProgramBreakdowns(){
         <span style="color:#fff;font-size:15px;font-weight:700">${icon} ${PROGRAM_NAME[key]}</span>
         <span style="background:rgba(255,255,255,.22);color:#fff;padding:3px 14px;border-radius:20px;font-size:13px;font-weight:700">${total} คน</span>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;background:${light}">
+      <div class="breakdown-grid" style="display:grid;grid-template-columns:1fr 1fr;background:${light}">
         <div style="padding:16px 20px 12px;border-right:1px solid ${border}">
           <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px">แผนการเรียน (${curE.length} แผน)</div>
           ${curRows}
@@ -771,6 +818,23 @@ window.addEventListener('DOMContentLoaded',()=>{
   renderGrades();
   buildCurriculumSelect('cmp-curriculum','cmp-program');
   renderCompare();
+});
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('mob-overlay').classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('mob-overlay').classList.remove('open');
+}
+// Close sidebar when a nav item is tapped on mobile
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    el.addEventListener('click',()=>{
+      if(window.innerWidth<=900) closeSidebar();
+    });
+  });
 });
 </script>
 </body>
